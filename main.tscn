@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://8n2nwlcwjd60"]
+
+[ext_resource type="PackedScene" uid="uid://b2gjvsxx8ecqp" path="res://test/music_sync.tscn" id="1_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://clmkx38hco0co" path="res://player/player.tscn" id="2_h2yge"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
+size = Vector2(1429, 297)
+
+[node name="Main" type="Node2D" unique_id=1731830820]
+
+[node name="MusicSync" parent="." unique_id=946199486 instance=ExtResource("1_0xm2m")]
+
+[node name="Player" parent="." unique_id=1682893562 instance=ExtResource("2_h2yge")]
+position = Vector2(153, 169)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1419285235]
+position = Vector2(611, 378)
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=63693936]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1462307534]
+position = Vector2(-53.5, 154)
+shape = SubResource("RectangleShape2D_0xm2m")
