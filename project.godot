@@ -14,10 +14,18 @@ config/name="lame_jam_66"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+MusicSync="*uid://b2gjvsxx8ecqp"
+
 [display]
 
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/midi/plugin.cfg")
 
 [input]
 

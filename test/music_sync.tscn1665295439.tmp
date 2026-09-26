@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://b2gjvsxx8ecqp"]
+
+[ext_resource type="Script" uid="uid://c4jcvhwhpm8vi" path="res://test/music_sync.gd" id="1_clfic"]
+[ext_resource type="AudioStream" uid="uid://31wyjpysg6qq" path="res://test/untitled.wav" id="2_twxc6"]
+[ext_resource type="Script" uid="uid://bf1vnufu7na6x" path="res://addons/midi/MidiPlayer.gd" id="3_vdklw"]
+
+[node name="MusicSync" type="Node2D" unique_id=946199486]
+script = ExtResource("1_clfic")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1401051948]
+stream = ExtResource("2_twxc6")
+
+[node name="MidiPlayer" type="Node" parent="." unique_id=973234265]
+script = ExtResource("3_vdklw")
+file = "res://test/free_midi/AzaBattle(THEME 1).mid"
+metadata/_custom_type_script = "uid://bf1vnufu7na6x"
