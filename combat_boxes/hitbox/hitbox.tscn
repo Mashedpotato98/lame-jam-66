@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://dkq8a8ecw2q3p"]
+
+[ext_resource type="Script" uid="uid://cnf47bkpgv1j2" path="res://combat_boxes/hitbox/hitbox.gd" id="1_h1u6h"]
+
+[node name="Hitbox" type="Area2D" unique_id=1883017910]
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_h1u6h")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1936215686]
