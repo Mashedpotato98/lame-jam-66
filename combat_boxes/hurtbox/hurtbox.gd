@@ -26,7 +26,10 @@ func _on_duration_timeout() -> void:
 
 
 func _on_area_entered(hitbox: Hitbox) -> void:
+	# Might be able to use some Rect2 overlap compairing if it hits the wrong hitbox. But Rect2 can't rotate.
 	if just_hit:
+		return
+	if hitbox.owner == owner:
 		return
 	just_hit = true
 	cancel_activation()

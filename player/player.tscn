@@ -1,18 +1,189 @@
 [gd_scene format=3 uid="uid://clmkx38hco0co"]
 
 [ext_resource type="Script" uid="uid://bk44gxb7rx26b" path="res://player/player.gd" id="1_oul6g"]
-[ext_resource type="Texture2D" uid="uid://be754aqphdtps" path="res://icon.svg" id="2_rkbax"]
+[ext_resource type="Script" uid="uid://skxgdedvxhtd" path="res://utils/tween_param.gd" id="2_qjkh3"]
+[ext_resource type="PackedScene" uid="uid://cht8l7thi5f35" path="res://combat_boxes/hurtbox/hurtbox.tscn" id="3_yw30f"]
+[ext_resource type="Texture2D" uid="uid://ywn33mtwdsqy" path="res://assets/player_size_ref.png" id="4_qjkh3"]
+[ext_resource type="PackedScene" uid="uid://dkq8a8ecw2q3p" path="res://combat_boxes/hitbox/hitbox.tscn" id="4_yw30f"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_rkbax"]
-radius = 20.0
+[sub_resource type="Resource" id="Resource_yw30f"]
+script = ExtResource("2_qjkh3")
+duration = 0.3
+transition_type = 10
+ease_type = 1
+metadata/_custom_type_script = "uid://skxgdedvxhtd"
 
-[node name="Player" type="CharacterBody2D" unique_id=1682893562]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g6k8r"]
+size = Vector2(8, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kuab0"]
+size = Vector2(7, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yw30f"]
+size = Vector2(20, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qcud2"]
+size = Vector2(38, 3)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7ec35"]
+size = Vector2(23.686531, 6)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r8hrl"]
+size = Vector2(5, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kce6f"]
+size = Vector2(11, 7)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qjkh3"]
+size = Vector2(12, 9)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rhbrn"]
+size = Vector2(10, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_swhvp"]
+size = Vector2(24, 8)
+
+[sub_resource type="Gradient" id="Gradient_qjkh3"]
+offsets = PackedFloat32Array(0.46103895)
+colors = PackedColorArray(0.24840015, 0.24840018, 0.24840015, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_qcud2"]
+gradient = SubResource("Gradient_qjkh3")
+width = 32
+height = 4
+fill_to = Vector2(0, 0)
+
+[sub_resource type="Gradient" id="Gradient_g6k8r"]
+offsets = PackedFloat32Array(0.46103895)
+colors = PackedColorArray(0.7371432, 0.3003621, 0.3617631, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_boad6"]
+gradient = SubResource("Gradient_g6k8r")
+width = 32
+height = 4
+fill_to = Vector2(0, 0)
+
+[node name="Player" type="CharacterBody2D" unique_id=679134144]
 script = ExtResource("1_oul6g")
+movement_tween = SubResource("Resource_yw30f")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1402997781]
-shape = SubResource("CircleShape2D_rkbax")
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1441701697]
+show_behind_parent = true
+texture = ExtResource("4_qjkh3")
+offset = Vector2(0, -16)
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=420035877]
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("2_rkbax")
-flip_v = true
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=165511766]
+
+[node name="CollisionDetector" type="ShapeCast2D" parent="." unique_id=1594147861]
+editor_description = "This is probably going to create more lag spikes than a CharacterBody2D, but I wanna try it out.
+The disadvantage is that there's no move_and_slide(), so he can't walk up slopes."
+position = Vector2(0, -12)
+enabled = false
+shape = SubResource("RectangleShape2D_g6k8r")
+target_position = Vector2(0, 512)
+max_results = 1024
+
+[node name="FloorDetector" type="Area2D" parent="." unique_id=1060757677]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FloorDetector" unique_id=1297228978]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_kuab0")
+
+[node name="CombatBoxes" type="Node2D" parent="." unique_id=2094650152]
+unique_name_in_owner = true
+editor_description = "Invert this node's transform to flip combat boxes.
+Parent to Sprite to make it always sync with visuals."
+
+[node name="Hurtboxes" type="Node2D" parent="CombatBoxes" unique_id=1489589264]
+
+[node name="LowKick" parent="CombatBoxes/Hurtboxes" unique_id=1095047231 instance=ExtResource("3_yw30f")]
+unique_name_in_owner = true
+position = Vector2(0, -16)
+
+[node name="CollisionShape" parent="CombatBoxes/Hurtboxes/LowKick" index="0" unique_id=367337600]
+position = Vector2(10, 12)
+shape = SubResource("RectangleShape2D_yw30f")
+
+[node name="SwordSlash" parent="CombatBoxes/Hurtboxes" unique_id=1067026744 instance=ExtResource("3_yw30f")]
+unique_name_in_owner = true
+position = Vector2(0, -16)
+damage = 3
+
+[node name="CollisionShape" parent="CombatBoxes/Hurtboxes/SwordSlash" index="0" unique_id=367337600]
+position = Vector2(13, 4.5)
+shape = SubResource("RectangleShape2D_qcud2")
+
+[node name="HighKick" parent="CombatBoxes/Hurtboxes" unique_id=67579609 instance=ExtResource("3_yw30f")]
+unique_name_in_owner = true
+position = Vector2(0, -10)
+rotation = -0.5235988
+damage = 2
+
+[node name="CollisionShape" parent="CombatBoxes/Hurtboxes/HighKick" index="0" unique_id=367337600]
+position = Vector2(19.405445, -1.9073486e-06)
+shape = SubResource("RectangleShape2D_7ec35")
+
+[node name="GroundNPound" parent="CombatBoxes/Hurtboxes" unique_id=326977244 instance=ExtResource("3_yw30f")]
+unique_name_in_owner = true
+
+[node name="CollisionShape" parent="CombatBoxes/Hurtboxes/GroundNPound" index="0" unique_id=367337600]
+position = Vector2(0.5, -5)
+shape = SubResource("RectangleShape2D_r8hrl")
+
+[node name="Hitboxes" type="Node2D" parent="CombatBoxes" unique_id=464706795]
+unique_name_in_owner = true
+
+[node name="Legs" parent="CombatBoxes/Hitboxes" unique_id=1883017910 instance=ExtResource("4_yw30f")]
+position = Vector2(0, -4)
+
+[node name="CollisionShape" parent="CombatBoxes/Hitboxes/Legs" index="0" unique_id=1936215686]
+position = Vector2(1.5, 0.5)
+shape = SubResource("RectangleShape2D_kce6f")
+
+[node name="Body" parent="CombatBoxes/Hitboxes" unique_id=790856325 instance=ExtResource("4_yw30f")]
+position = Vector2(0, -11)
+multi = 2
+
+[node name="CollisionShape" parent="CombatBoxes/Hitboxes/Body" index="0" unique_id=1936215686]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_qjkh3")
+
+[node name="Head" parent="CombatBoxes/Hitboxes" unique_id=1236276611 instance=ExtResource("4_yw30f")]
+multi = 3
+
+[node name="CollisionShape" parent="CombatBoxes/Hitboxes/Head" index="0" unique_id=1936215686]
+position = Vector2(0, -21)
+shape = SubResource("RectangleShape2D_rhbrn")
+
+[node name="ProneHitbox" parent="CombatBoxes/Hitboxes" unique_id=1625121268 instance=ExtResource("4_yw30f")]
+unique_name_in_owner = true
+multi = 2
+
+[node name="CollisionShape" parent="CombatBoxes/Hitboxes/ProneHitbox" index="0" unique_id=1936215686]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_swhvp")
+disabled = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=922306987]
+
+[node name="TestHealthBar" type="TextureProgressBar" parent="." unique_id=1280125107]
+offset_left = -16.0
+offset_top = -39.0
+offset_right = 16.0
+offset_bottom = -35.0
+value = 100.0
+texture_under = SubResource("GradientTexture2D_qcud2")
+texture_progress = SubResource("GradientTexture2D_boad6")
+
+[connection signal="body_exited" from="FloorDetector" to="." method="_on_floor_detector_body_exited"]
+[connection signal="damaged" from="CombatBoxes/Hitboxes/Legs" to="." method="_on_legs_damaged"]
+
+[editable path="CombatBoxes/Hurtboxes/LowKick"]
+[editable path="CombatBoxes/Hurtboxes/SwordSlash"]
+[editable path="CombatBoxes/Hurtboxes/HighKick"]
+[editable path="CombatBoxes/Hurtboxes/GroundNPound"]
+[editable path="CombatBoxes/Hitboxes/Legs"]
+[editable path="CombatBoxes/Hitboxes/Body"]
+[editable path="CombatBoxes/Hitboxes/Head"]
+[editable path="CombatBoxes/Hitboxes/ProneHitbox"]
