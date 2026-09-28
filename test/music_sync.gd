@@ -87,7 +87,8 @@ func hit_note(id: int) -> void:
 
 
 func wait_beats(duration: float) -> void:
-	await get_tree().create_timer(60.0 / midi_player.midi.tempo * duration).timeout
+	var bpm: int = 200#midi_player.midi.tempo
+	await get_tree().create_timer(60.0 / bpm * duration).timeout
 
 
 func get_multi(id: int) -> int:

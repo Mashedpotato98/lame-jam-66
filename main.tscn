@@ -6,6 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://dju7d82vs218f" path="res://assets/parallax_1.png" id="2_lquwl"]
 [ext_resource type="Texture2D" uid="uid://biabhtx27x7y5" path="res://assets/parallax_2.png" id="3_7mycd"]
 [ext_resource type="Texture2D" uid="uid://cf1inyylcfgl5" path="res://assets/tileset.png" id="5_7mycd"]
+[ext_resource type="Texture2D" uid="uid://cbukbo7p5ejpk" path="res://assets/health_bar0.png" id="7_5vw27"]
+[ext_resource type="Texture2D" uid="uid://reen6qfn5qk1" path="res://assets/health_bar1.png" id="8_kek77"]
+[ext_resource type="Texture2D" uid="uid://wuw7fj7x4fsr" path="res://assets/health_bar0_2.png" id="9_4c57u"]
+[ext_resource type="Texture2D" uid="uid://m1eqniol7vnr" path="res://assets/health_bar1_2.png" id="10_efxa6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_272bh"]
 texture = ExtResource("5_7mycd")
@@ -56,7 +60,7 @@ texture = ExtResource("3_7mycd")
 [node name="MusicSync" parent="." unique_id=946199486 instance=ExtResource("1_0xm2m")]
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1817231264]
-tile_map_data = PackedByteArray("AAD//wgAAAABAAEAAAD//wcAAAABAAEAAAD//wYAAAABAAEAAAD//wUAAAABAAEAAAD//wQAAAABAAEAAAD//wMAAAABAAEAAAD//wIAAAABAAEAAAD//wEAAAABAAEAAAD//wAAAAABAAEAAAD/////AAABAAEAAAAAAP//AAABAAEAAAABAP//AAABAAEAAAACAP//AAABAAEAAAADAP//AAABAAEAAAAEAP//AAABAAEAAAAFAP//AAABAAEAAAAGAP//AAABAAEAAAAHAP//AAABAAEAAAAIAP//AAABAAEAAAAJAP//AAABAAEAAAAKAP//AAABAAEAAAALAP//AAABAAEAAAAMAP//AAABAAEAAAANAP//AAABAAEAAAAOAP//AAABAAEAAAAPAP//AAABAAEAAAAQAP//AAABAAEAAAAQAAAAAAABAAEAAAAQAAEAAAABAAEAAAAQAAgAAAABAAEAAAAQAAcAAAABAAEAAAAQAAYAAAABAAEAAAAQAAUAAAABAAEAAAAQAAQAAAABAAEAAAAQAAMAAAABAAEAAAAQAAIAAAABAAEAAAACAAQAAAAAAAAAAAADAAQAAAABAAAAAAAMAAQAAAACAAAAAAALAAQAAAABAAAAAAAEAAQAAAACAAAAAAAKAAQAAAAAAAAAAAAMAAYAAAAFAAMAAAAMAAcAAAAFAAQAAAANAAYAAAAGAAMAAAANAAcAAAAGAAQAAAAOAAYAAAAHAAMAAAAOAAcAAAAHAAQAAAAEAAcAAAADAAQAAAAFAAcAAAAEAAQAAAADAAMAAAACAAQAAAALAAMAAAACAAQAAAAAAAYAAAAAAAMAAAAAAAcAAAAAAAQAAAABAAYAAAABAAMAAAABAAcAAAABAAQAAAA=")
+tile_map_data = PackedByteArray("AAD//wgAAAABAAEAAAD//wcAAAABAAEAAAD//wYAAAABAAEAAAD//wUAAAABAAEAAAD//wQAAAABAAEAAAD//wMAAAABAAEAAAD//wIAAAABAAEAAAD//wEAAAABAAEAAAD//wAAAAABAAEAAAD/////AAABAAEAAAAAAP//AAABAAEAAAABAP//AAABAAEAAAACAP//AAABAAEAAAADAP//AAABAAEAAAAEAP//AAABAAEAAAAFAP//AAABAAEAAAAGAP//AAABAAEAAAAHAP//AAABAAEAAAAIAP//AAABAAEAAAAJAP//AAABAAEAAAAKAP//AAABAAEAAAALAP//AAABAAEAAAAMAP//AAABAAEAAAANAP//AAABAAEAAAAOAP//AAABAAEAAAAPAP//AAABAAEAAAAQAP//AAABAAEAAAAQAAAAAAABAAEAAAAQAAEAAAABAAEAAAAQAAgAAAABAAEAAAAQAAcAAAABAAEAAAAQAAYAAAABAAEAAAAQAAUAAAABAAEAAAAQAAQAAAABAAEAAAAQAAMAAAABAAEAAAAQAAIAAAABAAEAAAACAAQAAAAAAAAAAAADAAQAAAABAAAAAAAEAAQAAAACAAAAAAAMAAYAAAAFAAMAAAAMAAcAAAAFAAQAAAANAAYAAAAGAAMAAAANAAcAAAAGAAQAAAAOAAYAAAAHAAMAAAAOAAcAAAAHAAQAAAAEAAcAAAADAAQAAAAFAAcAAAAEAAQAAAADAAMAAAACAAQAAAAAAAYAAAAAAAMAAAAAAAcAAAAAAAQAAAABAAYAAAABAAMAAAABAAcAAAABAAQAAAALAAQAAAAAAAAAAAAMAAQAAAABAAAAAAAMAAMAAAACAAQAAAANAAQAAAACAAAAAAA=")
 tile_set = SubResource("TileSet_qcud2")
 
 [node name="Players" type="Node2D" parent="." unique_id=1292274668]
@@ -69,9 +73,41 @@ position = Vector2(224, 128)
 id = 2
 direction = -1
 
+[node name="Sprite" parent="Players/Player2" index="0" unique_id=1441701697]
+modulate = Color(0.48267972, 1.6915808, 2.1695182, 1)
+
 [node name="Floor" type="StaticBody2D" parent="." unique_id=120699664]
 collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor" unique_id=2018024029]
 position = Vector2(128, 128)
 shape = SubResource("WorldBoundaryShape2D_7mycd")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="." unique_id=1531951202]
+offset_right = 36.0
+offset_bottom = 16.0
+value = 100.0
+texture_under = ExtResource("7_5vw27")
+texture_progress = ExtResource("8_kek77")
+
+[node name="TextureProgressBar2" type="TextureProgressBar" parent="." unique_id=1572761961]
+offset_left = 220.0
+offset_right = 256.0
+offset_bottom = 16.0
+value = 100.0
+fill_mode = 1
+texture_under = ExtResource("9_4c57u")
+texture_progress = ExtResource("10_efxa6")
+
+[connection signal="health_set" from="Players/Player1" to="TextureProgressBar" method="set_value"]
+[connection signal="health_set" from="Players/Player2" to="TextureProgressBar2" method="set_value"]
+
+[editable path="Players/Player2"]
+[editable path="Players/Player2/CombatBoxes/Hurtboxes/LowKick"]
+[editable path="Players/Player2/CombatBoxes/Hurtboxes/SwordSlash"]
+[editable path="Players/Player2/CombatBoxes/Hurtboxes/HighKick"]
+[editable path="Players/Player2/CombatBoxes/Hurtboxes/GroundNPound"]
+[editable path="Players/Player2/CombatBoxes/Hitboxes/Legs"]
+[editable path="Players/Player2/CombatBoxes/Hitboxes/Body"]
+[editable path="Players/Player2/CombatBoxes/Hitboxes/Head"]
+[editable path="Players/Player2/CombatBoxes/Hitboxes/ProneHitbox"]

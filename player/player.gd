@@ -10,6 +10,7 @@ enum HitWindows {
 }
 
 signal health_set(health: int)
+signal died(player: Player)
 
 const FALL_SCAN_LENGTH: float = 512.0
 const BASE_JUMP_HEIGHT: float = 4.0
@@ -35,6 +36,7 @@ var hit_note: Callable = func(_id: int) -> void: print("Consumed note.")
 var wait_beats: Callable = func(duration: float) -> void:
 		await get_tree().create_timer(duration, false).timeout
 var get_multi: Callable = func(_id: int) -> int: return randi_range(1, 3)
+var dead := false
 
 @onready var sprite: Sprite2D = $Sprite
 @onready var collision_detector: ShapeCast2D = $CollisionDetector
@@ -52,11 +54,18 @@ var get_multi: Callable = func(_id: int) -> int: return randi_range(1, 3)
 		return floor_detector.get_overlapping_bodies().size() > 0
 @onready var health: int = 100:
 	set(value):
+		if dead:
+			return
 		health = value
 		health_set.emit(health)
 		$TestHealthBar.value = health
 		if health <= 0:
-			queue_free()
+			dead = true
+			animation_player.play(&"death")
+			set_physics_process(false)
+			set_process_input(false)
+			set_process(false)
+			died.emit(self)
 @onready var prone := false:
 	set(value):
 		prone = value
@@ -91,25 +100,34 @@ func _input(event: InputEvent) -> void:
 	if is_pressed(event, "left"):
 		direction = -1
 		move(Vector2.LEFT * BASE_STEP_SIZE * multi)
+		animation_player.play(&"run")
 	elif is_pressed(event, "right"):
 		direction = 1
 		move(Vector2.RIGHT * BASE_STEP_SIZE * multi)
+		animation_player.play(&"run")
 	elif is_pressed(event, "duck"):
 		#move(Vector2.DOWN * FALL_SCAN_LENGTH)
 		prone = true
+		animation_player.play(&"dodge")
 		await wait_beats.call(DUCK_DURATION / multi)
+		print("Ended")
 		prone = false
+		_on_animation_player_animation_finished(&"dodge")
 	elif is_pressed(event, "low_kick"):
 		low_kick.activate()
+		animation_player.play(&"atk2")
 	elif not prone:
 		if is_pressed(event, "jump"):
 			move(Vector2.UP * BASE_JUMP_HEIGHT * multi)
+			animation_player.play(&"jump_up")
 			#await wait_beats.call(JUMP_DURATION)
 			#move(Vector2.DOWN * FALL_SCAN_LENGTH)
 		elif is_pressed(event, "slash"):
 			sword_slash.activate()
+			animation_player.play(&"atk3")
 		elif is_pressed(event, "high_kick"):
 			high_kick.activate()
+			animation_player.play(&"atk1")
 		elif is_pressed(event, "dash"):
 			pass
 		else:
@@ -161,7 +179,13 @@ func _on_hitbox_damaged(damage: int) -> void:
 func _on_floor_detector_body_exited(_body: Node2D) -> void:
 	await wait_beats.call(JUMP_DURATION)
 	move(Vector2.DOWN * FALL_SCAN_LENGTH)
+	animation_player.play(&"jump_down")
 
 
 func _on_legs_damaged(_damage: int) -> void:
-	stun(1.0)
+	pass#stun(1.0)
+
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	if anim_name != "death":
+		animation_player.play(&"idle" if is_on_floor else &"jump_up")
