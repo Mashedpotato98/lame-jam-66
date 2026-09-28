@@ -16,7 +16,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-MusicSync="*uid://b2gjvsxx8ecqp"
+MusicSync="uid://b2gjvsxx8ecqp"
 
 [display]
 
@@ -28,7 +28,7 @@ window/size/mode.editor=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/midi/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_midi/plugin.cfg", "res://addons/midi/plugin.cfg")
 
 [gui]
 

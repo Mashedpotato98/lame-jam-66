@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://8n2nwlcwjd60"]
 
 [ext_resource type="PackedScene" uid="uid://b2gjvsxx8ecqp" path="res://test/music_sync.tscn" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://qdbtsa560oqa" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://clmkx38hco0co" path="res://player/player.tscn" id="2_h2yge"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0xm2m"]
 size = Vector2(1429, 297)
 
 [node name="Main" type="Node2D" unique_id=1731830820]
+script = ExtResource("1_h2yge")
 
 [node name="MusicSync" parent="." unique_id=946199486 instance=ExtResource("1_0xm2m")]
 

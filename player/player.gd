@@ -32,11 +32,11 @@ const DUCK_DURATION: float = 1.0
 		sprite.flip_h = direction < 0
 
 # FIXME
-var get_offset: Callable = func() -> float: return 0
-var hit_note: Callable = func() -> void: print("Consumed note.")
+var get_offset: Callable = func(_id: int) -> float: return 0
+var hit_note: Callable = func(_id: int) -> void: print("Consumed note.")
 var wait_beats: Callable = func(duration: float) -> void:
 		await get_tree().create_timer(duration, false).timeout
-var get_multi: Callable = func() -> int: return randi_range(1, 3)
+var get_multi: Callable = func(_id: int) -> int: return randi_range(1, 3)
 
 @onready var sprite: Sprite2D = $Sprite
 @onready var collision_detector: ShapeCast2D = $CollisionDetector
@@ -80,14 +80,14 @@ func _input(event: InputEvent) -> void:
 	if stunned:
 		return
 
-	var offset: float = get_offset.call()
+	var offset: float = get_offset.call(id)
 	var multi: int = -1
 	for i: int in range(1, HitWindows.size() + 1):
 		if offset <= HitWindows.values()[i - 1]:
 			multi = i
 	if multi == -1:
 		return
-	multi *= get_multi.call()
+	multi *= get_multi.call(id)
 
 	# FIXME: Clean up this monster somehow. Maybe by using a node-based or signal-based system.
 	if is_pressed(event, "left"):
@@ -119,7 +119,7 @@ func _input(event: InputEvent) -> void:
 	else:
 		return
 
-	hit_note.call()
+	hit_note.call(id)
 
 
 func is_pressed(event: InputEvent, action: StringName) -> bool:

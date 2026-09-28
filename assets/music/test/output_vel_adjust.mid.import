@@ -1,0 +1,14 @@
+[remap]
+
+importer="com.nlaha.godotmidi"
+type="MidiResource"
+uid="uid://bva6e4cj54hdr"
+path="res://.godot/imported/output_vel_adjust.mid-4e6c62b2aab486079a8fc36c624c9036.res"
+
+[deps]
+
+source_file="res://assets/music/test/output_vel_adjust.mid"
+dest_files=["res://.godot/imported/output_vel_adjust.mid-4e6c62b2aab486079a8fc36c624c9036.res"]
+
+[params]
+

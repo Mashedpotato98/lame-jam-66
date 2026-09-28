@@ -1,60 +1,99 @@
-extends Node2D
-
-signal do_something_on_beat(beat:int);
-
-var time_begin:float
-var time_delay:float
-
-@export var bpm:int = 146
-
-@onready var secs_per_beat:float = 60.0 / bpm;
-
-var last_beat:int
-var move_tween:Tween
-var in_beat:bool
-
-func startMusic(player:AudioStreamPlayer2D, midi:MidiPlayer):
-	pass
-	#player.play()
-	#midi.play();
+class_name MusicSync extends Node2D
 
 
-func midiProcess():
-	in_beat = false
-	var song_position = ($AudioStreamPlayer2D.get_playback_position() + AudioServer.get_time_since_last_mix()) - AudioServer.get_output_latency() 
-	var curr_beat = floor(song_position / secs_per_beat)
+const MAX_HIT_WINDOW: float = Player.HitWindows.BAD / 1000.0
 
+var approach_time: float = 1.0
+var hit_keys: Dictionary[int, PackedStringArray] = {1: [], 2: []}
 
-	if (curr_beat > last_beat):
-		in_beat = true
-		last_beat = curr_beat
-		do_something_on_beat.emit(curr_beat)
+@onready var midi_player: MidiPlayer = $MidiPlayer
+@onready var audio_stream_player: AudioStreamPlayer = $AudioStreamPlayer
+@onready var t:
+	get:
+		return midi_player.current_time
 
-	#if in_beat:
-		#print("in beat ");
 
 func _ready() -> void:
-	#startMusic($AudioStreamPlayer2D, $MidiPlayer)\
-	$AudioStreamPlayer2D.play()
-	do_something_on_beat.connect(_do_something_on_beat)
+	midi_player.note.connect(_on_midi_player_note)
+	midi_player.link_audio_stream_player([audio_stream_player])
+	midi_player.play()
 
 
-func _process(delta: float) -> void:
-	midiProcess()
+func _process(_delta: float) -> void:
+	queue_redraw()
 
-#ignore. Was goofing around with the plugin
-func _on_midi_player_midi_event(channel: Variant, event: Variant) -> void:
-	pass
-	#if Input.is_action_pressed("ui_right"): 
-		#if channel.number == 1:
-			#print("sucesss")
-		#else:
-			#print("die")
 
-func _on_timer_timeout() -> void:
-	$Sprite2D.global_position.x -= 10
+func _draw() -> void:
+	const TOP_MARGIN: float = 32.0
+	var screen_width: float = ProjectSettings.get_setting("display/window/size/viewport_width")
+	var half_screen: float = screen_width / 2.0
+	# TODO: Replace with draw_texture()
+	draw_circle(Vector2(half_screen, TOP_MARGIN), 9.0, Color.GRAY)
+	for e: Dictionary in midi_player.get_notes_around(t, approach_time, MAX_HIT_WINDOW):
+		if not e.get("active", false):
+			continue
+		#var velocity: int = e.get("data", 0)
+		for id: int in hit_keys.keys():
+			var key: String = _note_key(e)
+			if not key in hit_keys[id]:
+				var id_dirs: Dictionary[int, int] = {1: -1, 2: 1}
+				var radius: float = 8.0 * e.get("data", 0)
+				var pos := Vector2(
+					lerpf(
+						half_screen + id_dirs[id] * (half_screen + radius),
+						half_screen,
+						remap(e.get("time", 0.0), t, t - approach_time, 0.0, 1.0)
+					),
+						TOP_MARGIN
+				)
+				draw_circle(pos, radius, Color.RED if id == 1 else Color.BLUE)
 
-func _do_something_on_beat(beat:int):
-	pass
-	#move_tween = get_tree().create_tween()
-	#move_tween.tween_property($Sprite2D, "position", Vector2(0,0), 0.1)
+
+func _note_key(e: Dictionary) -> String:
+	return str(e.get("time", 0.0)) + ":" + str(e.get("note", 0))
+
+
+## Returns null if no notes are within the max hit window.
+func get_current_note(id: int) -> Dictionary:
+	var current: Dictionary
+	for event: Dictionary in midi_player.get_notes_around(midi_player.current_time,
+			MAX_HIT_WINDOW, MAX_HIT_WINDOW):
+		if not event.get("active", false):
+			continue
+		if _note_key(event) in hit_keys[id]:
+			continue
+		if current == {} or event.get("time", 0.0) > current.get("time", 0.0):
+			current = event
+
+	return current
+
+
+func sort_notes(a: Dictionary, b: Dictionary) -> bool:
+	return absf(get_offset_from_event(a)) < absf(get_offset_from_event(b))
+
+
+func get_offset_from_event(event: Dictionary) -> float:
+	return t - event.get("time", 0.0)
+
+
+func get_offset(id: int) -> float:
+	return get_offset_from_event(get_current_note(id))
+
+
+func hit_note(id: int) -> void:
+	var key: String = _note_key(get_current_note(id))
+	if not hit_keys[id].has(key):
+		hit_keys[id].append(key)
+
+
+func wait_beats(duration: float) -> void:
+	await get_tree().create_timer(60.0 / midi_player.midi.tempo * duration).timeout
+
+
+func get_multi(id: int) -> int:
+	return get_current_note(id).get("data", 0)
+
+
+func _on_midi_player_note(event: Dictionary, _track: int) -> void:
+	if (event["subtype"] == MIDI_MESSAGE_NOTE_ON): # note on
+		pass # do something on note on
