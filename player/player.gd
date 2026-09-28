@@ -61,7 +61,7 @@ var dead := false
 		$TestHealthBar.value = health
 		if health <= 0:
 			dead = true
-			animation_player.play(&"death")
+			play(&"death")
 			set_physics_process(false)
 			set_process_input(false)
 			set_process(false)
@@ -88,46 +88,57 @@ func _input(event: InputEvent) -> void:
 		return
 
 	var offset: float = get_offset.call(id)
+	print(offset)
+	if offset == INF:
+		return
 	var multi: int = -1
 	for i: int in range(1, HitWindows.size() + 1):
 		if offset <= HitWindows.values()[i - 1]:
 			multi = i
 	if multi == -1:
 		return
+	match multi:
+		1:
+			$Label.text = "Meh"
+		2:
+			$Label.text = "OK"
+		3:
+			$Label.text = "Great!"
+	get_tree().create_timer(0.2).timeout.connect(func(): $Label.text = "")
 	multi *= get_multi.call(id)
 
 	# FIXME: Clean up this monster somehow. Maybe by using a node-based or signal-based system.
 	if is_pressed(event, "left"):
 		direction = -1
 		move(Vector2.LEFT * BASE_STEP_SIZE * multi)
-		animation_player.play(&"run")
+		play(&"run")
 	elif is_pressed(event, "right"):
 		direction = 1
 		move(Vector2.RIGHT * BASE_STEP_SIZE * multi)
-		animation_player.play(&"run")
+		play(&"run")
 	elif is_pressed(event, "duck"):
 		#move(Vector2.DOWN * FALL_SCAN_LENGTH)
 		prone = true
-		animation_player.play(&"dodge")
+		play(&"dodge")
 		await wait_beats.call(DUCK_DURATION / multi)
 		print("Ended")
 		prone = false
 		_on_animation_player_animation_finished(&"dodge")
 	elif is_pressed(event, "low_kick"):
 		low_kick.activate()
-		animation_player.play(&"atk2")
+		play(&"atk2")
 	elif not prone:
 		if is_pressed(event, "jump"):
 			move(Vector2.UP * BASE_JUMP_HEIGHT * multi)
-			animation_player.play(&"jump_up")
+			play(&"jump_up")
 			#await wait_beats.call(JUMP_DURATION)
 			#move(Vector2.DOWN * FALL_SCAN_LENGTH)
 		elif is_pressed(event, "slash"):
 			sword_slash.activate()
-			animation_player.play(&"atk3")
+			play(&"atk3")
 		elif is_pressed(event, "high_kick"):
 			high_kick.activate()
-			animation_player.play(&"atk1")
+			play(&"atk1")
 		elif is_pressed(event, "dash"):
 			pass
 		else:
@@ -136,6 +147,10 @@ func _input(event: InputEvent) -> void:
 		return
 
 	hit_note.call(id)
+
+
+func play(anim: StringName) -> void:
+	animation_player.play(anim, -1, 2.0)
 
 
 func is_pressed(event: InputEvent, action: StringName) -> bool:
@@ -179,7 +194,7 @@ func _on_hitbox_damaged(damage: int) -> void:
 func _on_floor_detector_body_exited(_body: Node2D) -> void:
 	await wait_beats.call(JUMP_DURATION)
 	move(Vector2.DOWN * FALL_SCAN_LENGTH)
-	animation_player.play(&"jump_down")
+	play(&"jump_down")
 
 
 func _on_legs_damaged(_damage: int) -> void:
@@ -188,4 +203,4 @@ func _on_legs_damaged(_damage: int) -> void:
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	if anim_name != "death":
-		animation_player.play(&"idle" if is_on_floor else &"jump_up")
+		play(&"idle" if is_on_floor else &"jump_up")

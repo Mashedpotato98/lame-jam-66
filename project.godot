@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="lame_jam_66"
+run/main_scene="uid://8n2nwlcwjd60"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -28,7 +29,7 @@ window/size/mode.editor=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot_midi/plugin.cfg", "res://addons/midi/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_midi/plugin.cfg")
 
 [gui]
 

@@ -2,6 +2,7 @@ class_name MusicSync extends Node2D
 
 
 const MAX_HIT_WINDOW: float = Player.HitWindows.BAD / 1000.0
+const BPM = 150 # FIXME
 
 var approach_time: float = 1.0
 var hit_keys: Dictionary[int, PackedStringArray] = {1: [], 2: []}
@@ -29,7 +30,7 @@ func _draw() -> void:
 	var half_screen: float = screen_width / 2.0
 	# TODO: Replace with draw_texture()
 	draw_circle(Vector2(half_screen, TOP_MARGIN), 9.0, Color.GRAY)
-	for e: Dictionary in midi_player.get_notes_around(t, approach_time, MAX_HIT_WINDOW):
+	for e: Dictionary in midi_player.get_notes_around(t, 0, approach_time):
 		if not e.get("active", false):
 			continue
 		#var velocity: int = e.get("data", 0)
@@ -37,12 +38,12 @@ func _draw() -> void:
 			var key: String = _note_key(e)
 			if not key in hit_keys[id]:
 				var id_dirs: Dictionary[int, int] = {1: -1, 2: 1}
-				var radius: float = 8.0 * e.get("data", 0)
+				var radius: float = 2.0 * e.get("data", 0)
 				var pos := Vector2(
 					lerpf(
 						half_screen + id_dirs[id] * (half_screen + radius),
 						half_screen,
-						remap(e.get("time", 0.0), t, t - approach_time, 0.0, 1.0)
+						remap(e.get("time", 0.0), t - approach_time, t, 0.0, 1.0)
 					),
 						TOP_MARGIN
 				)
@@ -73,6 +74,8 @@ func sort_notes(a: Dictionary, b: Dictionary) -> bool:
 
 
 func get_offset_from_event(event: Dictionary) -> float:
+	if event == {}:
+		return INF
 	return t - event.get("time", 0.0)
 
 

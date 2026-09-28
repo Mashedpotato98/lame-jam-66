@@ -1,0 +1,14 @@
+[remap]
+
+importer="com.nlaha.godotmidi"
+type="MidiResource"
+uid="uid://dxbtwnsx08s6l"
+path="res://.godot/imported/ACE Reasonable Synth-2.mid-1dfe827c2c6b142949eb90ca63b0b49c.res"
+
+[deps]
+
+source_file="res://assets/music/ACE Reasonable Synth-2.mid"
+dest_files=["res://.godot/imported/ACE Reasonable Synth-2.mid-1dfe827c2c6b142949eb90ca63b0b49c.res"]
+
+[params]
+

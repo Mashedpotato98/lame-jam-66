@@ -385,6 +385,12 @@ value = 100.0
 texture_under = SubResource("GradientTexture2D_qcud2")
 texture_progress = SubResource("GradientTexture2D_boad6")
 
+[node name="Label" type="Label" parent="." unique_id=146671390]
+offset_left = -23.0
+offset_top = -52.0
+offset_right = 21.0
+offset_bottom = -29.0
+
 [connection signal="body_exited" from="FloorDetector" to="." method="_on_floor_detector_body_exited"]
 [connection signal="damaged" from="CombatBoxes/Hitboxes/Legs" to="." method="_on_legs_damaged"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

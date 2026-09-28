@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://b2gjvsxx8ecqp"]
 
 [ext_resource type="Script" uid="uid://c4jcvhwhpm8vi" path="res://test/music_sync.gd" id="1_clfic"]
-[ext_resource type="MidiResource" uid="uid://bva6e4cj54hdr" path="res://assets/music/test/output_vel_adjust.mid" id="2_0k5ou"]
-[ext_resource type="AudioStream" uid="uid://b3pitd03008w4" path="res://assets/music/test/U1 overground - .mp3" id="2_clfic"]
+[ext_resource type="AudioStream" uid="uid://db6x38eq2b2kh" path="res://assets/music/tunetank-japan-trap-348406.ogg" id="2_clfic"]
+[ext_resource type="MidiResource" uid="uid://b4p4mvfky6fx" path="res://assets/music/midi.mid" id="3_clfic"]
 
 [node name="MusicSync" type="Node2D" unique_id=946199486]
 script = ExtResource("1_clfic")
@@ -11,4 +11,4 @@ script = ExtResource("1_clfic")
 stream = ExtResource("2_clfic")
 
 [node name="MidiPlayer" type="MidiPlayer" parent="." unique_id=216765400]
-midi = ExtResource("2_0k5ou")
+midi = ExtResource("3_clfic")

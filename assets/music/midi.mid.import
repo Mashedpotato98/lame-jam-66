@@ -1,0 +1,14 @@
+[remap]
+
+importer="com.nlaha.godotmidi"
+type="MidiResource"
+uid="uid://b4p4mvfky6fx"
+path="res://.godot/imported/midi.mid-970050752d857fc7951ad3b382ee761d.res"
+
+[deps]
+
+source_file="res://assets/music/midi.mid"
+dest_files=["res://.godot/imported/midi.mid-970050752d857fc7951ad3b382ee761d.res"]
+
+[params]
+
