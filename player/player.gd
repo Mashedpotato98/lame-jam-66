@@ -3,10 +3,11 @@ class_name Player extends Node2D
 
 # TODO: Move the hit windows to the proper script.
 # NOTE: The hit windows must be ordered from greatest offset to least.
+# BUG: If hitwindows overlap, 2 notes can be consumed at once.
 enum HitWindows {
-	BAD = 100,
-	GOOD = 50,
-	PERFECT = 25,
+	BAD = 200,
+	GOOD = 100,
+	PERFECT = 50,
 }
 
 signal health_set(health: int)
@@ -88,7 +89,7 @@ func _input(event: InputEvent) -> void:
 	if stunned:
 		return
 
-	var latency: float = AudioServer.get_time_to_next_mix() + AudioServer.get_output_latency()
+	var latency: float = 0#AudioServer.get_time_to_next_mix() + AudioServer.get_output_latency()
 	var offset: float = absf(get_offset.call(id, latency))
 	print(offset)
 	if offset == INF:
