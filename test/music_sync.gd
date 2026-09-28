@@ -37,8 +37,8 @@ func _draw() -> void:
 		for id: int in hit_keys.keys():
 			var key: String = _note_key(e)
 			if not key in hit_keys[id]:
-				var id_dirs: Dictionary[int, int] = {1: -1, 2: 1}
-				var radius: float = 2.0 * e.get("data", 0)
+				var id_dirs: Dictionary[int, int] = {1: 1, 2: -1}
+				var radius: float = 8.0 * e.get("data", 0)
 				var pos := Vector2(
 					lerpf(
 						half_screen + id_dirs[id] * (half_screen + radius),
@@ -63,7 +63,7 @@ func get_current_note(id: int) -> Dictionary:
 			continue
 		if _note_key(event) in hit_keys[id]:
 			continue
-		if current == {} or event.get("time", 0.0) > current.get("time", 0.0):
+		if current == {} or event.get("time", 0.0) < current.get("time", 0.0):
 			current = event
 
 	return current

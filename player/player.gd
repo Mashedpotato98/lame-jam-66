@@ -90,8 +90,9 @@ func _input(event: InputEvent) -> void:
 		return
 
 	var latency: float = 0#AudioServer.get_time_to_next_mix() + AudioServer.get_output_latency()
-	var offset: float = absf(get_offset.call(id, latency))
+	var offset: float = get_offset.call(id, latency)
 	print(offset)
+	offset = absf(offset)
 	if offset == INF:
 		return
 	var multi: int = -1

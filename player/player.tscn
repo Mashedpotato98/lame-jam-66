@@ -394,6 +394,7 @@ offset_bottom = -29.0
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=281691531]
 stream = ExtResource("6_g6k8r")
+volume_db = 10.0
 
 [connection signal="body_exited" from="FloorDetector" to="." method="_on_floor_detector_body_exited"]
 [connection signal="damaged" from="CombatBoxes/Hitboxes/Legs" to="." method="_on_legs_damaged"]
