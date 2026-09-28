@@ -2,7 +2,7 @@ class_name MusicSync extends Node2D
 
 
 const MAX_HIT_WINDOW: float = Player.HitWindows.BAD / 1000.0
-const BPM = 150 # FIXME
+const BPM = 155 # FIXME
 
 var approach_time: float = 1.0
 var hit_keys: Dictionary[int, PackedStringArray] = {1: [], 2: []}
@@ -73,14 +73,14 @@ func sort_notes(a: Dictionary, b: Dictionary) -> bool:
 	return absf(get_offset_from_event(a)) < absf(get_offset_from_event(b))
 
 
-func get_offset_from_event(event: Dictionary) -> float:
+func get_offset_from_event(event: Dictionary, latency: float = 0.0) -> float:
 	if event == {}:
 		return INF
-	return t - event.get("time", 0.0)
+	return t - event.get("time", 0.0) + latency
 
 
-func get_offset(id: int) -> float:
-	return get_offset_from_event(get_current_note(id))
+func get_offset(id: int, latency: float = 0.0) -> float:
+	return get_offset_from_event(get_current_note(id), latency)
 
 
 func hit_note(id: int) -> void:
@@ -99,5 +99,5 @@ func get_multi(id: int) -> int:
 
 
 func _on_midi_player_note(event: Dictionary, _track: int) -> void:
-	if (event["subtype"] == MIDI_MESSAGE_NOTE_ON): # note on
-		pass # do something on note on
+	if event.get("active", false): # note on
+		print("On")

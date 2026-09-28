@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dmhii348q5v7a" path="res://assets/player.png" id="3_qjkh3"]
 [ext_resource type="PackedScene" uid="uid://cht8l7thi5f35" path="res://combat_boxes/hurtbox/hurtbox.tscn" id="3_yw30f"]
 [ext_resource type="PackedScene" uid="uid://dkq8a8ecw2q3p" path="res://combat_boxes/hitbox/hitbox.tscn" id="4_yw30f"]
+[ext_resource type="AudioStream" uid="uid://bvyvvir8cwtvi" path="res://assets/sfx/11325622-tr707-snare-drum-241412.wav" id="6_g6k8r"]
 
 [sub_resource type="Resource" id="Resource_yw30f"]
 script = ExtResource("2_qjkh3")
@@ -390,6 +391,9 @@ offset_left = -23.0
 offset_top = -52.0
 offset_right = 21.0
 offset_bottom = -29.0
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="." unique_id=281691531]
+stream = ExtResource("6_g6k8r")
 
 [connection signal="body_exited" from="FloorDetector" to="." method="_on_floor_detector_body_exited"]
 [connection signal="damaged" from="CombatBoxes/Hitboxes/Legs" to="." method="_on_legs_damaged"]

@@ -15,7 +15,7 @@ signal died(player: Player)
 const FALL_SCAN_LENGTH: float = 512.0
 const BASE_JUMP_HEIGHT: float = 4.0
 const BASE_STEP_SIZE: float = 6.0
-const JUMP_DURATION: float = 0.5
+const JUMP_DURATION: float = 1.0
 const DUCK_DURATION: float = 1.0
 
 @export var id: int = 1
@@ -31,7 +31,7 @@ const DUCK_DURATION: float = 1.0
 		combat_boxes.transform.x.x = direction
 		sprite.flip_h = direction < 0
 
-var get_offset: Callable = func(_id: int) -> float: return 0
+var get_offset: Callable = func(_id: int, _latency: float) -> float: return 0
 var hit_note: Callable = func(_id: int) -> void: print("Consumed note.")
 var wait_beats: Callable = func(duration: float) -> void:
 		await get_tree().create_timer(duration, false).timeout
@@ -66,6 +66,7 @@ var dead := false
 			set_process_input(false)
 			set_process(false)
 			died.emit(self)
+@onready var hit_sound: AudioStreamPlayer2D = $HitSound
 @onready var prone := false:
 	set(value):
 		prone = value
@@ -87,23 +88,18 @@ func _input(event: InputEvent) -> void:
 	if stunned:
 		return
 
-	var offset: float = get_offset.call(id)
+	var latency: float = AudioServer.get_time_to_next_mix() + AudioServer.get_output_latency()
+	var offset: float = absf(get_offset.call(id, latency))
 	print(offset)
 	if offset == INF:
 		return
 	var multi: int = -1
 	for i: int in range(1, HitWindows.size() + 1):
-		if offset <= HitWindows.values()[i - 1]:
+		if offset <= HitWindows.values()[i - 1] / 1000.0:
 			multi = i
 	if multi == -1:
 		return
-	match multi:
-		1:
-			$Label.text = "Meh"
-		2:
-			$Label.text = "OK"
-		3:
-			$Label.text = "Great!"
+	var acc: int = multi
 	get_tree().create_timer(0.2).timeout.connect(func(): $Label.text = "")
 	multi *= get_multi.call(id)
 
@@ -120,8 +116,8 @@ func _input(event: InputEvent) -> void:
 		#move(Vector2.DOWN * FALL_SCAN_LENGTH)
 		prone = true
 		play(&"dodge")
+		# ALERT: await shouldn't be called here because the note is only hit after all this.
 		await wait_beats.call(DUCK_DURATION / multi)
-		print("Ended")
 		prone = false
 		_on_animation_player_animation_finished(&"dodge")
 	elif is_pressed(event, "low_kick"):
@@ -147,6 +143,14 @@ func _input(event: InputEvent) -> void:
 		return
 
 	hit_note.call(id)
+	hit_sound.play()
+	match acc:
+		1:
+			$Label.text = "Meh"
+		2:
+			$Label.text = "OK"
+		3:
+			$Label.text = "Great!"
 
 
 func play(anim: StringName) -> void:
