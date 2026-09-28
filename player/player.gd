@@ -28,10 +28,8 @@ const DUCK_DURATION: float = 1.0
 			await ready
 
 		combat_boxes.transform.x.x = direction
-		print(direction)
 		sprite.flip_h = direction < 0
 
-# FIXME
 var get_offset: Callable = func(_id: int) -> float: return 0
 var hit_note: Callable = func(_id: int) -> void: print("Consumed note.")
 var wait_beats: Callable = func(duration: float) -> void:
